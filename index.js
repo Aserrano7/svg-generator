@@ -1,8 +1,8 @@
 const fs = require('fs');
 const inquirer = require('inquirer');
-
+const {Circle, Square, Triangle} = require('./lib/shapes');
 const questions = [
-    
+
     {
         type: "input",
         name: "name",
@@ -10,7 +10,7 @@ const questions = [
     },
     {
         type: "input",
-        name: " text-color",
+        name: "textColor",
         message: "Enter a text color",
     },
 
@@ -21,29 +21,70 @@ const questions = [
         choices: [
             "circle",
             "square",
-            "triangle", 
+            "triangle",
         ]
     },
     {
         type: "input",
-        name: "shape-color",
+        name: "shapeColor",
         message: "Enter a shape color",
     },
 ];
 
-class SVG{
-    constructor(){
-        this.text1 ='';
-        this.shape1 ='';
+class SVG {
+    constructor() {
+        this.text1 = '';
+        this.shape1 = '';
     }
-    render(){
+    render() {
         return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="200">${this.shape1}${this.text1}</svg>`;
     }
-    setText(text,color){
-        this.text1=`<text x="150" y="125" font-size="60" text-anchor="middle" fill="${color}">${text}</text>`
+    setText(text, color) {
+        this.text1 = `<text x="150" y="125" font-size="60" text-anchor="middle" fill="${color}">${text}</text>`
     }
-    setShape(shape){
+    setShape(shape) {
         this.shape1 = shape.render();
     }
 
 }
+
+function init() {
+    inquirer.prompt(questions).then((data) => {
+         
+            let userShape;
+            switch (data.shape) {
+                
+                case "square":
+                    userShape = new Square();
+                    break;
+
+                case "circle":
+                    userShape = new Circle();
+                    break;
+
+                case "triangle":
+                    userShape = new Triangle();
+                    break;
+
+                default:
+                    console.log("Invalid shape!");
+            }
+            let textLogo = data.name;
+            let userColor = data.textColor;
+            let svgColor = data.shapeColor;
+            const svg = new SVG();
+            userShape.setColor(svgColor);
+            svg.setText(textLogo, userColor);
+            svg.setShape(userShape);
+          
+            fs.writeFile("logo.svg", svg.render(), (err) => {
+                if (err) {
+                    console.error("Error writing file:", err);
+                } else {
+                    console.log("Logo successfully created!");
+                }
+            });
+
+        })
+}
+init();
