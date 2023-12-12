@@ -37,10 +37,10 @@ class SVG {
         this.shape1 = '';
     }
     render() {
-        return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="300" height="200">${this.shape1}${this.text1}</svg>`;
+        return `<svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="330" height="300">${this.shape1}${this.text1}</svg>`;
     }
     setText(text, color) {
-        this.text1 = `<text x="150" y="125" font-size="60" text-anchor="middle" fill="${color}">${text}</text>`
+        this.text1 = `<text x="50%" y="50%" font-size="90" text-anchor="middle" alignment-baseline="middle" fill="${color}">${text}</text>`
     }
     setShape(shape) {
         this.shape1 = shape.render();
@@ -76,12 +76,13 @@ function init() {
             userShape.setColor(svgColor);
             svg.setText(textLogo, userColor);
             svg.setShape(userShape);
-          
+           
             fs.writeFile("logo.svg", svg.render(), (err) => {
                 if (err) {
                     console.error("Error writing file:", err);
                 } else {
-                    console.log("Logo successfully created!");
+                    console.log(svg.render());
+                    console.log("Generated logo.svg!");
                 }
             });
 
